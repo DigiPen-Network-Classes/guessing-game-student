@@ -44,13 +44,9 @@ Client 2 has won! Disconnecting ...
 
 ## Blocking
 
-While the client is waiting for user input (for example using std::getline)
-it is ok that the client is blocking: if a second client wins while the
-first is waiting for input, the first client won't find out until it 
-attempts to send and/or is disconnected.
-
-The client can use blocking or non-blocking sockets, depending on your 
-implementation.
+The client example program uses threads to handle blocking on input (stdin) as well as
+blocking on receiving network traffic. It's simple but effective; one artifact of this
+is that output to stdout must go through the `safe_print` mutex.
 
 Your server will need to handle communication with multiple clients 
 simultaneously - this can be through threads, using select(), etc. Your
