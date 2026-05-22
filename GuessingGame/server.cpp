@@ -1,14 +1,19 @@
 #include <iostream>
-#include <chrono>
 #include <mutex>
 #include <string>
-#include <vector>
-#include <atomic>
 #include <thread>
-#include <set>
 #include <winsock2.h>
 #include "server.h"
 #include "game.h"
+
+
+std::mutex cout_mutex;
+
+void safe_print(const std::string& msg)
+{
+    std::lock_guard<std::mutex> lock(cout_mutex);
+    std::cout << msg;
+}
 
 void start_server(int listen_port) 
 {
@@ -23,15 +28,17 @@ void start_server(int listen_port)
     // TODO: bind the socket
 
     // TODO: begin listening for connections
-    std::cout << "Server listening on port " << listen_port << std::endl;
-    
+    safe_print("Server listening on port " + std::to_string(listen_port) + "\n");
+    // Initialize the game before accepting:
+    init_game();
+
     while (true) 
     {
         // TODO accept incoming clients,
         // TODO handle clients (select or threads)
         if (is_game_over()) 
         {
-            std::cout << "Game Over. Resetting game ..." << std::endl;
+            safe_print("Game Over. Resetting game ...\n");
             reset_game();
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -44,6 +51,7 @@ int main(int argc, char** argv)
     try
     {
         // TODO: get port from argv 
+		// Is the port valid? (1 <= port < 65536)
         //start_server(0);
     }
     catch (const std::exception& e) 

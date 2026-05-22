@@ -1,6 +1,4 @@
 #include "game.h"
-#include <cstdlib>
-#include <ctime>
 #include <string>
 #include <mutex>
 /*
